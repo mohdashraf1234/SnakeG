@@ -1,19 +1,22 @@
 let inputDir = {x: 0, y: 0}; 
+let gamePaused = false; 
+
 const foodSound = new Audio('./music/food.mp3');
 const gameOverSound = new Audio('./music/gameover.mp3');
 const moveSound = new Audio('./music/straner-things-124008.mp3');
 const musicSound = new Audio('./music/music.mp3');
+
 let speed = 19;
 let score = 0;
 let lastPaintTime = 0;
-let snakeArr = [
-    {x: 13, y: 15}
-];
+let snakeArr = [{x: 13, y: 15}];
 
 let food = {x: 6, y: 7}; 
 
 function main(ctime) {
     window.requestAnimationFrame(main);
+   
+    if(gamePaused) return; 
    
     if((ctime - lastPaintTime)/1000 < 1/speed){
         return;
@@ -56,7 +59,7 @@ function gameEngine(){
     if(snakeArr[0].y === food.y && snakeArr[0].x ===food.x){
         foodSound.play();
         score += 1;
-        if(score>hiscoreval){
+        if(score > hiscoreval){
             hiscoreval = score;
             localStorage.setItem("hiscore", JSON.stringify(hiscoreval));
             hiscoreBox.innerHTML = "HiScore: " + hiscoreval;
@@ -69,13 +72,15 @@ function gameEngine(){
     }
 
   
-    for (let i = snakeArr.length - 2; i>=0; i--) { 
-        snakeArr[i+1] = {...snakeArr[i]};
+    for (let i = snakeArr.length - 2; i >= 0; i--) { 
+        snakeArr[i + 1] = {...snakeArr[i]};
     }
 
     snakeArr[0].x += inputDir.x;
     snakeArr[0].y += inputDir.y;
 
+    const board = document.getElementById('board');
+   
     board.innerHTML = "";
     snakeArr.forEach((e, index)=>{
         snakeElement = document.createElement('div');
@@ -100,6 +105,7 @@ function gameEngine(){
 
 musicSound.play();
 let hiscore = localStorage.getItem("hiscore");
+let hiscoreval;
 if(hiscore === null){
     hiscoreval = 0;
     localStorage.setItem("hiscore", JSON.stringify(hiscoreval))
@@ -143,7 +149,48 @@ window.addEventListener('keydown', e =>{
     }
 });
 
-const touchArea = document.getElementById('board');
+// Button event listeners
+const upButton = document.getElementById('upButton');
+const downButton = document.getElementById('downButton');
+const leftButton = document.getElementById('leftButton');
+const rightButton = document.getElementById('rightButton');
+const pauseButton = document.getElementById('pauseButton');
+
+upButton.addEventListener('click', () => {
+    inputDir = {x: 0, y: -1};
+    moveSound.play();
+});
+
+downButton.addEventListener('click', () => {
+    inputDir = {x: 0, y: 1};
+    moveSound.play();
+});
+
+leftButton.addEventListener('click', () => {
+    inputDir = {x: -1, y: 0};
+    moveSound.play();
+});
+
+rightButton.addEventListener('click', () => {
+    inputDir = {x: 1, y: 0};
+    moveSound.play();
+});
+
+
+pauseButton.addEventListener('click', () => {
+    gamePaused = !gamePaused; 
+    if (gamePaused) {
+        pauseButton.innerText = "Resume";
+        musicSound.pause(); 
+    } else {
+        pauseButton.innerText = "Pause";
+        musicSound.play(); 
+    }
+});
+
+
+const touchArea = document.getElementById('controls');
+
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -165,23 +212,19 @@ function handleTouchMove(event) {
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > 0) {
-            // Swipe right
-            inputDir.x = 1;
-            inputDir.y = 0;
+           
+            inputDir = {x: 1, y: 0};
         } else {
-            // Swipe left
-            inputDir.x = -1;
-            inputDir.y = 0;
+           
+            inputDir = {x: -1, y: 0};
         }
     } else {
         if (deltaY > 0) {
-            // Swipe down
-            inputDir.x = 0;
-            inputDir.y = 1;
+           
+            inputDir = {x: 0, y: 1};
         } else {
-            // Swipe up
-            inputDir.x = 0;
-            inputDir.y = -1;
+           
+            inputDir = {x: 0, y: -1};
         }
     }
 }
