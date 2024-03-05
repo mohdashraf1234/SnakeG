@@ -6,7 +6,7 @@ const gameOverSound = new Audio('./music/gameover.mp3');
 const moveSound = new Audio('./music/straner-things-124008.mp3');
 const musicSound = new Audio('./music/music.mp3');
 
-let speed = 19;
+let speed = 10;
 let score = 0;
 let lastPaintTime = 0;
 let snakeArr = [{x: 13, y: 15}];
