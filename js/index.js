@@ -190,13 +190,8 @@ pauseButton.addEventListener('click', () => {
 
 
 const touchArea = document.getElementById('controls');
-
-let touchStartX = 0;
-let touchStartY = 0;
-
 touchArea.addEventListener('touchstart', handleTouchStart, false);
 touchArea.addEventListener('touchmove', handleTouchMove, false);
-
 function handleTouchStart(event) {
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
@@ -212,18 +207,14 @@ function handleTouchMove(event) {
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > 0) {
-           
             inputDir = {x: 1, y: 0};
         } else {
-           
             inputDir = {x: -1, y: 0};
         }
     } else {
         if (deltaY > 0) {
-           
             inputDir = {x: 0, y: 1};
         } else {
-           
             inputDir = {x: 0, y: -1};
         }
     }
